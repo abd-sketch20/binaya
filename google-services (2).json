@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1034912287019",
+    "project_id": "binaya-ffa6f",
+    "storage_bucket": "binaya-ffa6f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034912287019:android:e490a5018dc0cb87f61d6e",
+        "android_client_info": {
+          "package_name": "com.binaya.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIWs5yaNN3bY9DyS4uEZSVB4_RCDUSbhw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
