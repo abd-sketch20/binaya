@@ -37,3 +37,4 @@ jobs:
         with:
           name: binaya-release-apk
           path: '**/outputs/flutter-apk/app-release.apk'
+ 
