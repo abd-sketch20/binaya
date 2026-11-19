@@ -182,9 +182,9 @@ class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
   ];
 
   final List<Map<String, dynamic>> items = [
-    {'title': 'أسمنت', 'subtitle': 'مكتب الخليج • كيس 50 كغم', 'category': 'الأسمنت', 'icon': Icons.inventory_2_rounded, 'action': 'اتصال مباشر'},
-    {'title': 'حديد تسليح 16 ملم', 'subtitle': 'شركة الرافدين • طن', 'category': 'الحديد', 'icon': Icons.construction_rounded, 'action': 'اتصال مباشر'},
-    {'title': 'أبواب خارجية', 'subtitle': 'معرض البصرة • قطعة', 'category': 'الأبواب', 'icon': Icons.door_front_door_rounded, 'action': 'اتصال مباشر'},
+    {'title': 'أسمنت', 'subtitle': 'مكتب الخليج • كيس 50 كغم', 'meta': 'البصرة • السعر: عند التواصل', 'category': 'الأسمنت', 'icon': Icons.inventory_2_rounded, 'action': 'اتصال مباشر'},
+    {'title': 'حديد تسليح 16 ملم', 'subtitle': 'شركة الرافدين • طن', 'meta': 'البصرة • السعر: عند التواصل', 'category': 'الحديد', 'icon': Icons.construction_rounded, 'action': 'اتصال مباشر'},
+    {'title': 'أبواب خارجية', 'subtitle': 'معرض البصرة • قطعة', 'meta': 'البصرة • السعر: عند التواصل', 'category': 'الأبواب', 'icon': Icons.door_front_door_rounded, 'action': 'اتصال مباشر'},
   ];
 
   IconData _iconFor(String c) => c == 'الأسمنت'
@@ -197,6 +197,8 @@ class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
     final titleC = TextEditingController();
     final merchantC = TextEditingController();
     final unitC = TextEditingController();
+    final priceC = TextEditingController();
+    final cityC = TextEditingController(text: 'البصرة');
     String cat = 'الأسمنت';
 
     showModalBottomSheet(
@@ -207,43 +209,76 @@ class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setM) => Padding(
           padding: EdgeInsets.fromLTRB(16, 20, 16, MediaQuery.of(ctx).viewInsets.bottom + 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('إضافة مادة أو إعلان جديد', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: amber)),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: cat,
-                dropdownColor: bg,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(labelText: 'القسم', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
-                items: const ['الأسمنت', 'الحديد', 'الأبواب'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                onChanged: (v) { if (v != null) setM(() => cat = v); },
-              ),
-              const SizedBox(height: 10),
-              TextField(controller: titleC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'اسم المادة', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 10),
-              TextField(controller: merchantC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'اسم المكتب أو التاجر', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 10),
-              TextField(controller: unitC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'الوحدة', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 14),
-              SizedBox(
-                height: 48,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: amber, foregroundColor: dark, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                  onPressed: () {
-                    final t = titleC.text.trim();
-                    if (t.isEmpty) return;
-                    final mName = merchantC.text.trim().isEmpty ? 'مذخر بناية' : merchantC.text.trim();
-                    final uName = unitC.text.trim().isEmpty ? 'حسب الطلب' : unitC.text.trim();
-                    setState(() => items.insert(0, {'title': t, 'subtitle': '$mName • $uName', 'category': cat, 'icon': _iconFor(cat), 'action': 'اتصال مباشر'}));
-                    Navigator.pop(ctx);
-                  },
-                  child: const Text('نشر المادة', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('إضافة مادة أو إعلان جديد', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: amber)),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: cat,
+                  dropdownColor: bg,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(labelText: 'القسم', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                  items: const ['الأسمنت', 'الحديد', 'الأبواب'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (v) { if (v != null) setM(() => cat = v); },
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                TextField(controller: titleC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'اسم المادة', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+                const SizedBox(height: 10),
+                TextField(controller: merchantC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'اسم المكتب أو التاجر', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+                const SizedBox(height: 10),
+                TextField(controller: unitC, style: const TextStyle(color: Colors.white), decoration: InputDecoration(labelText: 'الوحدة', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: priceC,
+                        keyboardType: TextInputType.text,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(labelText: 'السعر (اختياري)', hintText: 'اتركه فارغاً إن رغبت', hintStyle: const TextStyle(color: Colors.white38), filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: cityC,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(labelText: 'المدينة', filled: true, fillColor: bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  height: 48,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(backgroundColor: amber, foregroundColor: dark, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                    onPressed: () {
+                      final t = titleC.text.trim();
+                      if (t.isEmpty) return;
+                      final mName = merchantC.text.trim().isEmpty ? 'مذخر بناية' : merchantC.text.trim();
+                      final uName = unitC.text.trim().isEmpty ? 'حسب الطلب' : unitC.text.trim();
+                      final cityName = cityC.text.trim().isEmpty ? 'البصرة' : cityC.text.trim();
+                      final rawPrice = priceC.text.trim();
+                      final priceText = rawPrice.isEmpty ? 'السعر: عند التواصل' : 'السعر: $rawPrice';
+                      setState(() => items.insert(0, {
+                        'title': t,
+                        'subtitle': '$mName • $uName',
+                        'meta': '$cityName • $priceText',
+                        'category': cat,
+                        'icon': _iconFor(cat),
+                        'action': 'اتصال مباشر',
+                      }));
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('نشر المادة', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -328,6 +363,8 @@ class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
                                 Text(item['title'] as String, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                                 const SizedBox(height: 6),
                                 Text(item['subtitle'] as String, style: const TextStyle(fontSize: 15, color: Colors.white70)),
+                                const SizedBox(height: 4),
+                                Text(item['meta'] as String, style: const TextStyle(fontSize: 14, color: amber, fontWeight: FontWeight.w600)),
                               ],
                             ),
                           ),
@@ -339,7 +376,7 @@ class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
                         height: 48,
                         child: FilledButton.icon(
                           style: FilledButton.styleFrom(backgroundColor: amber, foregroundColor: dark, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تواصل مع: ${item['subtitle']}'))),
+                          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تواصل مع: ${item['subtitle']} (${item['meta']})'))),
                           icon: const Icon(Icons.call_rounded),
                           label: Text(item['action'] as String, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
                         ),
