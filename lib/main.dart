@@ -37,14 +37,14 @@ class BinayaHomeScreen extends StatefulWidget {
 class _BinayaHomeScreenState extends State<BinayaHomeScreen> {
   String selectedCategory = 'الكل';
 
-  final categories = <String>[
+  final categories = [
     'الكل',
     'الأسمنت',
     'الحديد',
     'الأبواب',
   ];
 
-  final materials = >[
+  final materials = [
     {
       'name': 'أسمنت مقاوم للكبريتات',
       'category': 'الأسمنت',
