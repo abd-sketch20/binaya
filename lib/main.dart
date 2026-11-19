@@ -9,11 +9,21 @@ class BinayaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const softSlateBg = Color(0xFF232730);
+    const cardSlate = Color(0xFF2F3542);
+    const machineryAmber = Color(0xFFF59E0B);
+    const darkText = Color(0xFF14171D);
+
     return MaterialApp(
       title: 'بناية',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E73BE)),
+        scaffoldBackgroundColor: softSlateBg,
+        colorScheme: const ColorScheme.dark(
+          primary: machineryAmber,
+          secondary: machineryAmber,
+          surface: cardSlate,
+        ),
         useMaterial3: true,
       ),
       builder: (context, child) {
@@ -22,115 +32,139 @@ class BinayaApp extends StatelessWidget {
           child: child ?? const SizedBox.shrink(),
         );
       },
-      home: const BinayaHomeScreen(),
+      home: const BinayaSimpleScreen(
+        softSlateBg: softSlateBg,
+        cardSlate: cardSlate,
+        machineryAmber: machineryAmber,
+        darkText: darkText,
+      ),
     );
   }
 }
 
-class BinayaHomeScreen extends StatefulWidget {
-  const BinayaHomeScreen({super.key});
+class BinayaSimpleScreen extends StatefulWidget {
+  final Color softSlateBg;
+  final Color cardSlate;
+  final Color machineryAmber;
+  final Color darkText;
+
+  const BinayaSimpleScreen({
+    super.key,
+    required this.softSlateBg,
+    required this.cardSlate,
+    required this.machineryAmber,
+    required this.darkText,
+  });
 
   @override
-  State<BinayaHomeScreen> createState() => _BinayaHomeScreenState();
+  State<BinayaSimpleScreen> createState() => _BinayaSimpleScreenState();
 }
 
-class _BinayaHomeScreenState extends State<BinayaHomeScreen> {
-  String selectedCategory = 'الكل';
+class _BinayaSimpleScreenState extends State<BinayaSimpleScreen> {
+  String selectedFilter = 'الكل';
 
-  final categories = [
-    'الكل',
-    'الأسمنت',
-    'الحديد',
-    'الأبواب',
+  final filters = [
+    {'label': 'الكل', 'icon': Icons.grid_view_rounded},
+    {'label': 'الأسمنت', 'icon': Icons.inventory_2_rounded},
+    {'label': 'الحديد', 'icon': Icons.construction_rounded},
+    {'label': 'الأبواب', 'icon': Icons.door_front_door_rounded},
   ];
 
-  final materials = [
+  final items = [
     {
-      'name': 'أسمنت مقاوم للكبريتات',
+      'title': 'أسمنت',
+      'subtitle': 'مكتب الخليج • كيس 50 كغم',
       'category': 'الأسمنت',
-      'merchant': 'مكتب الخليج لمواد البناء',
-      'unit': 'كيس 50 كغم',
-      'price': 'متوفر الآن',
+      'icon': Icons.inventory_2_rounded,
+      'action': 'اتصال مباشر',
     },
     {
-      'name': 'حديد تسليح قياس 16 ملم',
+      'title': 'حديد تسليح 16 ملم',
+      'subtitle': 'شركة الرافدين • طن',
       'category': 'الحديد',
-      'merchant': 'شركة الرافدين للحديد',
-      'unit': 'طن',
-      'price': 'تواصل للسعر',
+      'icon': Icons.construction_rounded,
+      'action': 'اتصال مباشر',
     },
     {
-      'name': 'أبواب حديد وكبس خارجية',
+      'title': 'أبواب خارجية',
+      'subtitle': 'معرض البصرة • قطعة',
       'category': 'الأبواب',
-      'merchant': 'معرض البصرة للأبواب',
-      'unit': 'قطعة',
-      'price': 'حسب القياس',
+      'icon': Icons.door_front_door_rounded,
+      'action': 'اتصال مباشر',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
-    final filteredItems = selectedCategory == 'الكل'
-        ? materials
-        : materials.where((item) => item['category'] == selectedCategory).toList();
+    final visibleItems = selectedFilter == 'الكل'
+        ? items
+        : items.where((e) => e['category'] == selectedFilter).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'بناية',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-        ),
+        backgroundColor: widget.cardSlate,
+        foregroundColor: widget.machineryAmber,
         centerTitle: true,
-        backgroundColor: const Color(0xFF1E73BE),
-        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.apartment_rounded, size: 28),
+            SizedBox(width: 8),
+            Text(
+              'بناية',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: const Color(0xFFEAF3FC),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'مواد البناء والتجار',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'اختر القسم لعرض المواد المتوفرة والتجار بوضوح',
-                  style: TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-              ],
-            ),
-          ),
           SizedBox(
-            height: 56,
+            height: 82,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemCount: filters.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
-                final cat = categories[index];
-                final isSelected = cat == selectedCategory;
-                return ChoiceChip(
-                  label: Text(
-                    cat,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : Colors.black87,
+                final f = filters[index];
+                final label = f['label'] as String;
+                final icon = f['icon'] as IconData;
+                final active = selectedFilter == label;
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => setState(() => selectedFilter = label),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: active ? widget.machineryAmber : widget.cardSlate,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: active ? widget.machineryAmber : Colors.white24,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          icon,
+                          size: 24,
+                          color: active ? widget.darkText : widget.machineryAmber,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: active ? widget.darkText : Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  selected: isSelected,
-                  selectedColor: const Color(0xFF1E73BE),
-                  onSelected: (_) {
-                    setState(() {
-                      selectedCategory = cat;
-                    });
-                  },
                 );
               },
             ),
@@ -138,70 +172,95 @@ class _BinayaHomeScreenState extends State<BinayaHomeScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: filteredItems.length,
+              itemCount: visibleItems.length,
               itemBuilder: (context, index) {
-                final item = filteredItems[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                item['name']!,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                final item = visibleItems[index];
+                final icon = item['icon'] as IconData;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 14),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: widget.cardSlate,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: widget.machineryAmber.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 68,
+                            height: 68,
+                            decoration: BoxDecoration(
+                              color: widget.machineryAmber.withOpacity(0.16),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: widget.machineryAmber),
                             ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEAF3FC),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                item['category']!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1E73BE),
-                                ),
-                              ),
+                            child: Icon(
+                              icon,
+                              size: 38,
+                              color: widget.machineryAmber,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text('التاجر: ${item['merchant']!}', style: const TextStyle(fontSize: 15)),
-                        const SizedBox(height: 4),
-                        Text('الوحدة: ${item['unit']!}', style: const TextStyle(fontSize: 15)),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('تم اختيار: ${item['name']!} من ${item['merchant']!}'),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['title'] as String,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              );
-                            },
-                            icon: const Icon(Icons.call),
-                            label: Text(
-                              item['price']!,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                const SizedBox(height: 6),
+                                Text(
+                                  item['subtitle'] as String,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: widget.machineryAmber,
+                            foregroundColor: widget.darkText,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'تواصل مع: ${item['subtitle']}',
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.call_rounded, size: 22),
+                          label: Text(
+                            item['action'] as String,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },
